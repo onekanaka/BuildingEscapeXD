@@ -7,6 +7,7 @@
 #include "Engine/TriggerVolume.h"
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h" 
+#include "GameFrameWork/Actor.h"
 #include "OpenDoor.generated.h"
 
 
@@ -14,7 +15,7 @@ UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class BUILDINGESCAPEXD_API UOpenDoor : public UActorComponent
 {
 	GENERATED_BODY()
-
+	
 public:	
 	// Sets default values for this component's properties
 	UOpenDoor();
@@ -57,5 +58,6 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float DoorCloseSpeed = 2.f;
+
 
 };
