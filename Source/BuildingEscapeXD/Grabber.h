@@ -7,6 +7,7 @@
 #include "Engine/World.h"
 #include "DrawDebugHelpers.h"
 #include "GameFramework/PlayerController.h"
+#include "CollisionQueryParams.h"
 #include "Grabber.generated.h"
 
 
