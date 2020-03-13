@@ -21,8 +21,14 @@ void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	UE_LOG(LogTemp, Warning, TEXT("Grabber reporting!"));
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+	if (PhysicsHandle) 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s has a PhysicsHandle!"), *GetOwner()->GetName());
+	} else 
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s doesn't have a PhysicsHandle"), *GetOwner()->GetName());
+	}
 }
 
 
@@ -60,9 +66,9 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	// See what it hits
 	AActor* ActorHit = Hit.GetActor();
 	if ( ActorHit ) {
-		UE_LOG(LogTemp, Warning, TEXT("HIT %s"), *ActorHit->GetName());
+		//UE_LOG(LogTemp, Warning, TEXT("HIT %s"), *ActorHit->GetName());
 	} else {
-		UE_LOG(LogTemp, Warning, TEXT("NOT HITTING"));
+		//UE_LOG(LogTemp, Warning, TEXT("NOT HITTING"));
 	}
 }
 

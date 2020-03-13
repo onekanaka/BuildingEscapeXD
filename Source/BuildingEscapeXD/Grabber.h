@@ -8,6 +8,7 @@
 #include "DrawDebugHelpers.h"
 #include "GameFramework/PlayerController.h"
 #include "CollisionQueryParams.h"
+#include "PhysicsEngine/PhysicsHandleComponent.h"
 #include "Grabber.generated.h"
 
 
@@ -30,4 +31,6 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	float Reach = 100.f;		
+
+	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 };
