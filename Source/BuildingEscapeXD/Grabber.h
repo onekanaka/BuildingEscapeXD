@@ -31,7 +31,7 @@ protected:
 
 private:
 	float Reach = 100.f;		
-
+	
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 	UInputComponent* InputComponent = nullptr;
 
@@ -39,5 +39,6 @@ private:
 	void SetupInputComponent();
 	void Grab();
 	void Release();
-	FHitResult GetFirstPhysicsBodyInReach() const;
+	FHitResult GetFirstPhysicsBodyInReach();
+	FVector GetLineTraceEnd(FVector& PlayerViewPointLocation);
 };

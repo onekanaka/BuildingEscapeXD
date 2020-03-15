@@ -49,19 +49,28 @@ void UGrabber::Grab()
 {
 	UE_LOG(LogTemp, Warning, TEXT("GRABBING GODAMIT"));
 
-	// To onlyraycast when key is pressed and reach any actors with physics body collission channel set
-	GetFirstPhysicsBodyInReach();
+	FVector PlayerViewPointLocation;
+	FVector LineTraceEnd = GetLineTraceEnd(OUT PlayerViewPointLocation);
+	FHitResult HitResult = GetFirstPhysicsBodyInReach();
+	UPrimitiveComponent* ComponentToGrab = HitResult.GetComponent();
 
 	// If we hit somehitng then attach the physics handle
-
-	// TODO Attach physics handle
+	if (HitResult.GetActor()) 
+	{
+		PhysicsHandle->GrabComponentAtLocation
+		(
+			ComponentToGrab,
+			NAME_None,
+			LineTraceEnd
+		);
+	}
 }
 
 void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("RELEASING GODAMIT"));
 
-	// TODO Remove/release the physics handle
+	PhysicsHandle->ReleaseComponent();
 }
 
 
@@ -70,22 +79,20 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	FVector PlayerViewPointLocation;
+	FVector LineTraceEnd = GetLineTraceEnd(OUT PlayerViewPointLocation);
+	if (PhysicsHandle->GrabbedComponent) 
+	{
+		PhysicsHandle->SetTargetLocation(LineTraceEnd);
+	}
 	// if the physic handle is attach
 		// Move tje pbject we are holfinh
 }
 
-FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
-{
-	// Get players viewpoint
+FHitResult UGrabber::GetFirstPhysicsBodyInReach()
+{	
 	FVector PlayerViewPointLocation;
-	FRotator PlayerViewPointRotation;
-	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
-
-	// UE_LOG(LogTemp, Warning, TEXT("Location: %s , Rotation: %s"), *PlayerViewPointLocation.ToString(), *PlayerViewPointRotation.Vector().ToString());
-	
-	// Point in front of the player, "Reach" units away
-	FVector LineTraceDirection = PlayerViewPointRotation.Vector() * Reach;
-	FVector LineTraceEnd = PlayerViewPointLocation + LineTraceDirection;
+	FVector LineTraceEnd = GetLineTraceEnd(OUT PlayerViewPointLocation);
 	// DrawDebugLine(GetWorld(), PlayerViewPointLocation, LineTraceEnd, FColor(0, 255, 0), false, 0.f, 0, 5.f);
 
 	// Ray-cast out to a certain distance or reach
@@ -109,4 +116,18 @@ FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
 	}
 
 	return Hit;
+}
+
+
+FVector UGrabber::GetLineTraceEnd(FVector& PlayerViewPointLocation)
+{
+	// Get players viewpoint
+	FRotator PlayerViewPointRotation;
+	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
+
+	// UE_LOG(LogTemp, Warning, TEXT("Location: %s , Rotation: %s"), *PlayerViewPointLocation.ToString(), *PlayerViewPointRotation.Vector().ToString());
+	
+	// Point in front of the player, "Reach" units away
+	FVector LineTraceDirection = PlayerViewPointRotation.Vector() * Reach;
+	return PlayerViewPointLocation + LineTraceDirection;
 }
