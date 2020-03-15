@@ -29,6 +29,22 @@ void UGrabber::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s doesn't have a PhysicsHandle"), *GetOwner()->GetName());
 	}
+
+
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (InputComponent) 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s has a GrabHandle!"), *GetOwner()->GetName());
+		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+	} else 
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s doesn't have a GrabHandle"), *GetOwner()->GetName());
+	}
+}
+
+void UGrabber::Grab()
+{
+	UE_LOG(LogTemp, Warning, TEXT("GRABBING GODAMIT"));
 }
 
 
