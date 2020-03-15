@@ -11,16 +11,19 @@ UGrabber::UGrabber()
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
-
 
 // Called when the game starts
 void UGrabber::BeginPlay()
 {
 	Super::BeginPlay();
 
+	FindPhysicsHandle();
+	SetupInputComponent();
+}
+
+void UGrabber::FindPhysicsHandle()
+{
 	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
 	if (PhysicsHandle) 
 	{
@@ -29,8 +32,10 @@ void UGrabber::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("%s doesn't have a PhysicsHandle"), *GetOwner()->GetName());
 	}
+}
 
-
+void UGrabber::SetupInputComponent()
+{
 	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
 	if (InputComponent) 
 	{
@@ -43,11 +48,20 @@ void UGrabber::BeginPlay()
 void UGrabber::Grab()
 {
 	UE_LOG(LogTemp, Warning, TEXT("GRABBING GODAMIT"));
+
+	// To onlyraycast when key is pressed and reach any actors with physics body collission channel set
+	GetFirstPhysicsBodyInReach();
+
+	// If we hit somehitng then attach the physics handle
+
+	// TODO Attach physics handle
 }
 
 void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("RELEASING GODAMIT"));
+
+	// TODO Remove/release the physics handle
 }
 
 
@@ -56,19 +70,23 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	// if the physic handle is attach
+		// Move tje pbject we are holfinh
+}
+
+FHitResult UGrabber::GetFirstPhysicsBodyInReach() const
+{
 	// Get players viewpoint
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
-
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
 
 	// UE_LOG(LogTemp, Warning, TEXT("Location: %s , Rotation: %s"), *PlayerViewPointLocation.ToString(), *PlayerViewPointRotation.Vector().ToString());
 	
-	// Draw a line from player showing the reach
+	// Point in front of the player, "Reach" units away
 	FVector LineTraceDirection = PlayerViewPointRotation.Vector() * Reach;
 	FVector LineTraceEnd = PlayerViewPointLocation + LineTraceDirection;
-
-	DrawDebugLine(GetWorld(), PlayerViewPointLocation, LineTraceEnd, FColor(0, 255, 0), false, 0.f, 0, 5.f);
+	// DrawDebugLine(GetWorld(), PlayerViewPointLocation, LineTraceEnd, FColor(0, 255, 0), false, 0.f, 0, 5.f);
 
 	// Ray-cast out to a certain distance or reach
 	FHitResult Hit;
@@ -85,9 +103,10 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	// See what it hits
 	AActor* ActorHit = Hit.GetActor();
 	if ( ActorHit ) {
-		//UE_LOG(LogTemp, Warning, TEXT("HIT %s"), *ActorHit->GetName());
+		UE_LOG(LogTemp, Warning, TEXT("HIT %s"), *ActorHit->GetName());
 	} else {
-		//UE_LOG(LogTemp, Warning, TEXT("NOT HITTING"));
+		UE_LOG(LogTemp, Warning, TEXT("NOT HITTING"));
 	}
-}
 
+	return Hit;
+}
