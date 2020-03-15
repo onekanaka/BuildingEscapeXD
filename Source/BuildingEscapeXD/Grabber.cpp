@@ -36,15 +36,18 @@ void UGrabber::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s has a GrabHandle!"), *GetOwner()->GetName());
 		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
-	} else 
-	{
-		UE_LOG(LogTemp, Error, TEXT("%s doesn't have a GrabHandle"), *GetOwner()->GetName());
+		InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
 	}
 }
 
 void UGrabber::Grab()
 {
 	UE_LOG(LogTemp, Warning, TEXT("GRABBING GODAMIT"));
+}
+
+void UGrabber::Release()
+{
+	UE_LOG(LogTemp, Warning, TEXT("RELEASING GODAMIT"));
 }
 
 
