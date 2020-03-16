@@ -40,5 +40,6 @@ private:
 	void Grab();
 	void Release();
 	FHitResult GetFirstPhysicsBodyInReach();
-	FVector GetLineTraceEnd(FVector& PlayerViewPointLocation);
+	FVector GetLineTraceEnd();
+	FVector GetPlayerViewPointLocation();
 };
