@@ -3,6 +3,8 @@
 
 #include "OpenDoor.h"
 
+#define OUT
+
 // Sets default values for this component's properties
 UOpenDoor::UOpenDoor()
 {
@@ -37,21 +39,18 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if ( PressurePlate ) 
+	if ( TotalMassofActors() > TotalMassForOpening )//PressurePlate && PressurePlate->IsOverlappingActor(ActorThatOpen) )
 	{
-		if ( PressurePlate->IsOverlappingActor(ActorThatOpen) )
+		OpenDoor(DeltaTime);
+		DoorLastTimeOpened = GetWorld()->GetTimeSeconds();
+	} 
+	else 
+	{
+		if (GetWorld()->GetTimeSeconds() - DoorLastTimeOpened > DoorCloseDelay) 
 		{
-			OpenDoor(DeltaTime);
-			DoorLastTimeOpened = GetWorld()->GetTimeSeconds();
-		} else {
-			if (GetWorld()->GetTimeSeconds() - DoorLastTimeOpened > DoorCloseDelay) 
-			{
-				CloseDoor(DeltaTime);
-			}
+			CloseDoor(DeltaTime);
 		}
 	}
-
-	
 }
 
 void UOpenDoor::OpenDoor(float DeltaTime)
@@ -85,4 +84,20 @@ void UOpenDoor::CloseDoor(float DeltaTime)
 	CurrentRotation.Yaw = NewYaw;
 		
 	GetOwner()->SetActorRotation(CurrentRotation);	
+}
+
+float UOpenDoor::TotalMassofActors() const
+{
+	float TotalMass = 0.f;
+
+	TArray<AActor*> OverlappingActors;
+	PressurePlate->GetOverlappingActors(OUT OverlappingActors);
+
+	for (AActor* Actor : OverlappingActors) 
+	{
+		TotalMass += Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass();
+		UE_LOG(LogTemp, Warning, TEXT("%s has %f kg"), *Actor->GetName(), Actor->FindComponentByClass<UPrimitiveComponent>()->GetMass());
+	}
+
+	return TotalMass;
 }

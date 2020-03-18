@@ -8,6 +8,7 @@
 #include "Engine/World.h"
 #include "GameFramework/PlayerController.h" 
 #include "GameFrameWork/Actor.h"
+#include "Components/PrimitiveComponent.h"
 #include "OpenDoor.generated.h"
 
 
@@ -31,6 +32,8 @@ public:
 	virtual void OpenDoor(float DeltaTime);
 
 	virtual void CloseDoor(float DeltaTime);
+
+	float TotalMassofActors() const;
 
 private:
 	
@@ -58,6 +61,9 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	float DoorCloseSpeed = 2.f;
+
+	UPROPERTY(EditAnywhere)
+	float TotalMassForOpening = 50.f;
 
 
 };
