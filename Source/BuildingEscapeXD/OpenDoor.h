@@ -46,10 +46,10 @@ private:
 	float TargetOpenDoorYaw;
 
 	UPROPERTY(EditAnywhere)
-	ATriggerVolume* PressurePlate;
+	ATriggerVolume* PressurePlate = nullptr;
 
 	UPROPERTY(EditAnywhere)
-	AActor* ActorThatOpen;
+	AActor* ActorThatOpen  = nullptr;
 
 	UPROPERTY(EditAnywhere)
 	float DoorCloseDelay = 2.f;

@@ -48,9 +48,10 @@ void UGrabber::Grab()
 
 	FHitResult HitResult = GetFirstPhysicsBodyInReach();
 	UPrimitiveComponent* ComponentToGrab = HitResult.GetComponent();
+	AActor* ActorHit = HitResult.GetActor();
 
 	// If we hit somehitng then attach the physics handle
-	if (HitResult.GetActor()) 
+	if (ActorHit && PhysicsHandle) 
 	{
 		PhysicsHandle->GrabComponentAtLocation
 		(
@@ -65,6 +66,11 @@ void UGrabber::Release()
 {
 	UE_LOG(LogTemp, Warning, TEXT("RELEASING GODAMIT"));
 
+	if (!PhysicsHandle) 
+	{
+		return;
+	}
+
 	PhysicsHandle->ReleaseComponent();
 }
 
@@ -74,7 +80,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	if (PhysicsHandle->GrabbedComponent) 
+	if (PhysicsHandle && PhysicsHandle->GrabbedComponent) 
 	{
 		PhysicsHandle->SetTargetLocation( GetLineTraceEnd() );
 	}
