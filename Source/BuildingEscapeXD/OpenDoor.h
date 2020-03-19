@@ -9,6 +9,7 @@
 #include "GameFramework/PlayerController.h" 
 #include "GameFrameWork/Actor.h"
 #include "Components/PrimitiveComponent.h"
+#include "Components/AudioComponent.h"
 #include "OpenDoor.generated.h"
 
 
@@ -35,9 +36,16 @@ public:
 
 	float TotalMassofActors() const;
 
+	void FindAudioComponent();
+
 private:
 	
 	float InitialYaw;
+	bool DoorOpening = false;
+	bool DoorClosing = true;
+	
+	UPROPERTY()
+	UAudioComponent* AudioComponent = nullptr;
 
 	UPROPERTY(EditAnywhere)
 	float OpenDoorAngle = 90.f;

@@ -31,6 +31,18 @@ void UOpenDoor::BeginPlay()
 	}
 
 	ActorThatOpen = GetWorld()->GetFirstPlayerController()->GetPawn();
+
+	FindAudioComponent();
+}
+
+void UOpenDoor::FindAudioComponent() 
+{
+	AudioComponent = GetOwner()->FindComponentByClass<UAudioComponent>();
+
+	if (!AudioComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("%s Missing AudioComponent"), *GetOwner()->GetName());
+	}
 }
 
 
@@ -70,8 +82,15 @@ void UOpenDoor::OpenDoor(float DeltaTime)
 	}
 
 	CurrentRotation.Yaw = NewYaw;
-		
+	
 	GetOwner()->SetActorRotation(CurrentRotation);	
+
+	if (DoorOpening == false && AudioComponent && !AudioComponent->IsPlaying()) {
+		AudioComponent->Play();
+		DoorOpening = true;
+		DoorClosing = false;
+	}
+
 }
 
 void UOpenDoor::CloseDoor(float DeltaTime)
@@ -84,6 +103,12 @@ void UOpenDoor::CloseDoor(float DeltaTime)
 	CurrentRotation.Yaw = NewYaw;
 		
 	GetOwner()->SetActorRotation(CurrentRotation);	
+
+	if (DoorClosing == false && AudioComponent && !AudioComponent->IsPlaying()) {
+		AudioComponent->Play();
+		DoorClosing = true;
+		DoorOpening = false;
+	}
 }
 
 float UOpenDoor::TotalMassofActors() const
